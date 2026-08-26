@@ -135,20 +135,52 @@ const examples = (await getCollection('example')).sort((a,b) => a.data.title.loc
         });
       </script>
     </div>
-    <p class="text-center mt-4">
-      Visit our GitHub repository for <a
-        class="btn btn-accent btn-sm border-accent bg-base-100 text-accent"
-        href={GITHUB_LINK + "tree/main/examples"}
-        target="_blank"
-        rel="noopener">more examples</a
-      > or complete <a
-        class="btn btn-accent btn-sm border-accent bg-base-100 text-accent"
-        href={GITHUB_LINK + "tree/main/use-cases"}
-        target="_blank"
-        rel="noopener">use cases</a
-      >.
-    </p>
   </Section>
+
+<!-- Try the package -->
+  <Section title="Try it yourself!" isGrid={true}>
+  <Card title="Install from npm" icon="fab fa-npm text-primary text-5xl">
+    <p>
+      Install the Diagram Editor and start building your own workflows.
+    </p>
+    <a
+      class="link link-accent"
+      href="https://www.npmjs.com/package/@openworkflowspec/diagram-editor"
+      target="_blank"
+      rel="noopener"
+    >
+      View on npm
+    </a>
+  </Card>
+
+  <Card title="Explore the repository" icon="fab fa-github text-primary text-5xl">
+    <p>
+      Visit our GitHub repository for more examples.
+    </p>
+    <a
+      class="link link-accent"
+      href={GITHUB_LINK + "tree/main/examples"}
+      target="_blank"
+      rel="noopener"
+    >
+      More Examples
+    </a>
+  </Card>
+  
+  <Card title="Explore the examples" icon="fa-solid fa-code text-primary text-5xl">
+    <p>
+      Explore examples and complete use cases.
+    </p>
+    <a
+      class="link link-accent"
+      href={GITHUB_LINK + "tree/main/use-cases"}
+      target="_blank"
+      rel="noopener"
+    >
+      Use cases
+    </a>
+  </Card>
+</Section>
 
   <!-- Reach out -->
   <Section title="Reach out to us!" isGrid={true}>
