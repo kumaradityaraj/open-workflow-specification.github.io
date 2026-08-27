@@ -5,6 +5,7 @@ import Card from '../components/Card.astro';
 import Section from '../components/Section.astro';
 import { Code } from 'astro:components';
 import { getCollection } from 'astro:content';
+import OWSEditor from "../components/OWSEditor";
 
 const examples = (await getCollection('example')).sort((a,b) => a.data.title.localeCompare(b.data.title));
 ---
@@ -66,22 +67,114 @@ const examples = (await getCollection('example')).sort((a,b) => a.data.title.loc
   </Section>
 
   <!-- Samples -->
-  <Section title="User-Friendly DSL: Workflows Made Simple" class="bg-base-200">
-      <div role="tablist" class="tabs tabs-lift tabs-sm overflow-auto">
+<Section title="User-Friendly DSL: Workflows Made Simple" class="bg-base-200">
+    <div class="w-full">
+      <div role="tablist" class="tabs tabs-lift tabs-sm overflow-x-auto">
         {
           examples.map((entry, idx) => (
-            <input type="radio" name="code_tabs" role="tab" class="tab h-12" aria-label={entry.data.title} checked={idx===0} />
-            <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
-              <h3 class="text-xl font-bold mb-4">{entry.data.title} Example</h3>
-              <Code themes={{'light': 'github-light', 'dark': 'github-dark'}} lang="yaml" code={entry.body||''} />
-            </div>
+            <>
+              <input
+                type="radio"
+                name="code_tabs"
+                role="tab"
+                class="tab h-12 whitespace-nowrap"
+                aria-label={entry.data.title}
+                checked={idx === 0}
+              />
+              <div
+                role="tabpanel"
+                class="tab-content bg-base-100 border-base-300 rounded-box p-6 w-full"
+              >
+                <h3 class="text-xl font-bold mb-4">
+                  {entry.data.title} Example
+                </h3>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[600px]">
+                  <div class="min-w-0 h-full overflow-auto">
+                    <Code
+                      themes={{
+                        light: "github-light",
+                        dark: "github-dark",
+                      }}
+                      lang="yaml"
+                      code={entry.body || ""}
+                    />
+                  </div>
+                  <div class="min-w-0 h-full">
+                    <OWSEditor
+                      client:load
+                      instanceKey={entry.data.title}
+                      content={entry.body || ""}
+                    />
+                  </div>
+                </div>
+              </div>
+            </>
           ))
         }
+      <script>
+        document.querySelectorAll('input[name="code_tabs"]').forEach((tab) => {
+          tab.addEventListener("change", () => {
+            setTimeout(() => {
+              const panel = tab.nextElementSibling;
+
+              if (!panel) return;
+
+              const fitViewButton = panel.querySelector(
+                ".react-flow__controls-fitview",
+              );
+
+              if (fitViewButton instanceof HTMLElement) {
+                fitViewButton.click();
+              }
+            }, 300);
+          });
+        });
+      </script>
       </div>
-      <p class="text-center mt-4">
-        Visit our GitHub repository for <a class="btn btn-accent btn-sm border-accent bg-base-100 text-accent" href={GITHUB_LINK + 'tree/main/examples'} target="_blank" rel="noopener">more examples</a> or complete <a class="btn btn-accent btn-sm border-accent bg-base-100 text-accent" href={GITHUB_LINK + 'tree/main/use-cases'} target="_blank" rel="noopener">use cases</a>.</p>
-      </p>
   </Section>
+
+<!-- Try the package -->
+<Section title="Try it yourself!" isGrid={true}>
+ <Card title="Install from npm" icon="fab fa-npm text-primary text-5xl">
+   <p>
+     Install the Diagram Editor and start building your own workflows.
+   </p>
+   <a
+     class="link link-accent"
+     href="https://www.npmjs.com/package/@openworkflowspec/diagram-editor"
+     target="_blank"
+     rel="noopener"
+   >
+     View on npm
+   </a>
+ </Card>
+ <Card title="Explore the repository" icon="fab fa-github text-primary text-5xl">
+   <p>
+     Visit our GitHub repository for more examples.
+   </p>
+   <a
+     class="link link-accent"
+     href={GITHUB_LINK + "tree/main/examples"}
+     target="_blank"
+     rel="noopener"
+   >
+     More Examples
+   </a>
+ </Card>
+ <Card title="Explore the examples" icon="fa-solid fa-code text-primary text-5xl">
+   <p>
+     Explore examples and complete use cases.
+   </p>
+   <a
+     class="link link-accent"
+     href={GITHUB_LINK + "tree/main/use-cases"}
+     target="_blank"
+     rel="noopener"
+   >
+     Use cases
+   </a>
+ </Card>
+</Section>
 
   <!-- Reach out -->
   <Section title="Reach out to us!" isGrid={true}>
