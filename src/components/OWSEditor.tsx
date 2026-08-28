@@ -1,44 +1,44 @@
 import "@openworkflowspec/diagram-editor/styles.css";
 import { DiagramEditor } from "@openworkflowspec/diagram-editor";
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
+import {
+  getActiveExampleId,
+  getServerActiveExampleId,
+  subscribeActiveExample,
+} from "../utils/activeExample";
+import { themeStore } from "../utils/theme";
 
-interface OWSEditorProps {
+interface Example {
+  id: string;
   content: string;
-  instanceKey: string;
+}
+interface OWSEditorProps {
+  examples: Example[];
 }
 
-export default function OWSEditor({ content, instanceKey }: OWSEditorProps) {
-  const [colorMode, setColorMode] = useState<"light" | "dark">("light");
+export default function OWSEditor({
+  examples,
+}: OWSEditorProps) {
+  const activeExampleId = useSyncExternalStore(
+    subscribeActiveExample,
+    getActiveExampleId,
+    getServerActiveExampleId,
+  );
 
-  useEffect(() => {
-    const updateColorMode = () => {
-      const root = document.documentElement;
+  const colorMode = useSyncExternalStore(
+    themeStore.subscribe,
+    themeStore.getSnapshot,
+    themeStore.getServerSnapshot,
+  );
 
-      const theme = root.getAttribute("data-theme");
+  const activeExample =
+    examples.find((example) => example.id === activeExampleId) ??
+    examples[0];
 
-      const isDark =
-        theme === "dark" ||
-        theme === "night" ||
-        root.classList.contains("dark");
-
-      setColorMode(isDark ? "dark" : "light");
-    };
-
-    updateColorMode();
-
-    const observer = new MutationObserver(updateColorMode);
-
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class", "data-theme"],
-    });
-
-    return () => observer.disconnect();
-  }, []);
+  const content = activeExample?.content ?? "";
 
   return (
     <DiagramEditor
-      key={`${instanceKey}-${colorMode}`}
       content={content}
       isReadOnly={true}
       locale="en"

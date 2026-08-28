@@ -67,70 +67,57 @@ const examples = (await getCollection('example')).sort((a,b) => a.data.title.loc
   </Section>
 
   <!-- Samples -->
-<Section title="User-Friendly DSL: Workflows Made Simple" class="bg-base-200">
-    <div class="w-full">
-      <div role="tablist" class="tabs tabs-lift tabs-sm overflow-x-auto">
-        {
-          examples.map((entry, idx) => (
-            <>
-              <input
-                type="radio"
-                name="code_tabs"
-                role="tab"
-                class="tab h-12 whitespace-nowrap"
-                aria-label={entry.data.title}
-                checked={idx === 0}
+  <Section title="User-Friendly DSL: Workflows Made Simple" class="bg-base-200">
+    <div
+      role="tablist"
+      id="example-tabs"
+      class="tabs tabs-lift tabs-sm"
+    >
+      {
+        examples.map((entry, idx) => (
+          <>
+            <input
+              type="radio"
+              name="example_tabs"
+              role="tab"
+              class="tab h-12 whitespace-nowrap"
+              value={entry.id}
+              aria-label={entry.data.title}
+              checked={idx === 0}
+            />
+
+            <div
+              role="tabpanel"
+              class="tab-content bg-base-100 border-base-300 rounded-box p-6 min-h-[600px] max-h-[600px] overflow-auto"
+            >
+              <Code
+                themes={{
+                  light: "github-light",
+                  dark: "github-dark",
+                }}
+                lang="yaml"
+                code={entry.body || ""}
               />
-              <div
-                role="tabpanel"
-                class="tab-content bg-base-100 border-base-300 rounded-box p-6 w-full"
-              >
-                <h3 class="text-xl font-bold mb-4">
-                  {entry.data.title} Example
-                </h3>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[600px]">
-                  <div class="min-w-0 h-full overflow-auto">
-                    <Code
-                      themes={{
-                        light: "github-light",
-                        dark: "github-dark",
-                      }}
-                      lang="yaml"
-                      code={entry.body || ""}
-                    />
-                  </div>
-                  <div class="min-w-0 h-full">
-                    <OWSEditor
-                      client:load
-                      instanceKey={entry.data.title}
-                      content={entry.body || ""}
-                    />
-                  </div>
-                </div>
-              </div>
-            </>
-          ))
-        }
-      <script>
-        document.querySelectorAll('input[name="code_tabs"]').forEach((tab) => {
-          tab.addEventListener("change", () => {
-            setTimeout(() => {
-              const panel = tab.nextElementSibling;
+            </div>
+          </>
+        ))
+      }
 
-              if (!panel) return;
+      <div
+        class="tabs-line-break"
+        aria-hidden="true"
+      ></div>
 
-              const fitViewButton = panel.querySelector(
-                ".react-flow__controls-fitview",
-              );
-
-              if (fitViewButton instanceof HTMLElement) {
-                fitViewButton.click();
-              }
-            }, 300);
-          });
-        });
-      </script>
+      <div class="diagram-slot min-w-0">
+        <OWSEditor
+          client:visible
+          examples={examples.map((entry) => ({
+            id: entry.id,
+            content: entry.body || "",
+          }))}
+        />
       </div>
+    </div>
   </Section>
 
 <!-- Try the package -->
@@ -282,5 +269,30 @@ const examples = (await getCollection('example')).sort((a,b) => a.data.title.loc
 <style>
   .hero-content {
     z-index: 0;
+  }
+  #example-tabs > .tabs-line-break {
+    width: 100%;
+    height: 0;
+    order: 1;
+  }
+
+  #example-tabs > .tab-content {
+    order: 2;
+  }
+
+  #example-tabs > .diagram-slot {
+    width: 100%;
+    min-height: 600px;
+    order: 3;
+  }
+
+  @media (min-width: 1024px) {
+    #example-tabs > .tab-content {
+      width: 50%;
+    }
+
+    #example-tabs > .diagram-slot {
+      width: 50%;
+    }
   }
 </style>
