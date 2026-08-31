@@ -1,21 +1,14 @@
 <script is:inline>
   (() => {
-    const initialTheme = (() => {
-      const storedTheme = localStorage.getItem("theme");
+    const storedTheme = localStorage.getItem("theme");
 
-      if (storedTheme) {
-        return storedTheme;
-      }
+    const initialTheme =
+      storedTheme === "light" || storedTheme === "dark"
+        ? storedTheme
+        : window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
 
-      return window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light";
-    })();
-
-    document.documentElement.setAttribute(
-      "data-theme",
-      initialTheme,
-    );
-    document.dispatchEvent(new Event("theme-change"));
+    document.documentElement.setAttribute("data-theme", initialTheme);
   })();
 </script>

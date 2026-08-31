@@ -1,5 +1,5 @@
 export type ColorMode = "light" | "dark";
-export const THEME_CHANGE_EVENT = "theme-change";
+const THEME_CHANGE_EVENT = "theme-change";
 
 export const getTheme = (): ColorMode => {
   if (typeof document === "undefined") {
@@ -9,6 +9,15 @@ export const getTheme = (): ColorMode => {
   return document.documentElement.dataset.theme === "dark"
     ? "dark"
     : "light";
+};
+
+export const setTheme = (theme: ColorMode): void => {
+  if (typeof document === "undefined") {
+    return;
+  }
+  document.documentElement.setAttribute("data-theme", theme);
+  localStorage.setItem("theme", theme);
+  document.dispatchEvent(new Event(THEME_CHANGE_EVENT));
 };
 
 export const subscribeTheme = (
@@ -23,11 +32,14 @@ export const subscribeTheme = (
   };
 };
 
-export const notifyThemeChange = (): void => {
-  if (typeof document === "undefined") {
+export const initializeThemeToggle = (): void => {
+  const checkbox = document.getElementById("theme-toggle");
+  if (!(checkbox instanceof HTMLInputElement)) {
     return;
   }
-  document.dispatchEvent(new Event(THEME_CHANGE_EVENT));
+  checkbox.addEventListener("change", () => {
+    setTheme(checkbox.checked ? "light" : "dark");
+  });
 };
 
 export const getServerTheme = (): ColorMode => "light";
