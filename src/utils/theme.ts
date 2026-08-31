@@ -1,6 +1,7 @@
 export type ColorMode = "light" | "dark";
 const THEME_CHANGE_EVENT = "theme-change";
 
+export const getServerTheme = (): ColorMode => "light";
 export const getTheme = (): ColorMode => {
   if (typeof document === "undefined") {
     return "light";
@@ -33,6 +34,9 @@ export const subscribeTheme = (
 };
 
 export const initializeThemeToggle = (): void => {
+  if (typeof document === "undefined") {
+    return;
+  }
   const checkbox = document.getElementById("theme-toggle");
   if (!(checkbox instanceof HTMLInputElement)) {
     return;
@@ -41,8 +45,6 @@ export const initializeThemeToggle = (): void => {
     setTheme(checkbox.checked ? "light" : "dark");
   });
 };
-
-export const getServerTheme = (): ColorMode => "light";
 
 export const themeStore = {
   getSnapshot: getTheme,

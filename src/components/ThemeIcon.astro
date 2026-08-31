@@ -24,11 +24,7 @@
 <script is:inline>
   const checkbox = document.getElementById("theme-toggle");
   if (checkbox instanceof HTMLInputElement) {
-    const currentTheme =
-      document.documentElement.dataset.theme === "dark"
-        ? "dark"
-        : "light";
-    checkbox.checked = currentTheme === "light";
+    checkbox.checked = document.documentElement.dataset.theme !== "dark";
   }
 </script>
 
