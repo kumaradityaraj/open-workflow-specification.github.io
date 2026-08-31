@@ -1,4 +1,5 @@
 export type ColorMode = "light" | "dark";
+export const THEME_CHANGE_EVENT = "theme-change";
 
 export const getTheme = (): ColorMode => {
   if (typeof document === "undefined") {
@@ -16,15 +17,17 @@ export const subscribeTheme = (
   if (typeof document === "undefined") {
     return () => {};
   }
+  document.addEventListener(THEME_CHANGE_EVENT, onChange);
+  return () => {
+    document.removeEventListener(THEME_CHANGE_EVENT, onChange);
+  };
+};
 
-  const observer = new MutationObserver(onChange);
-
-  observer.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ["data-theme"],
-  });
-
-  return () => observer.disconnect();
+export const notifyThemeChange = (): void => {
+  if (typeof document === "undefined") {
+    return;
+  }
+  document.dispatchEvent(new Event(THEME_CHANGE_EVENT));
 };
 
 export const getServerTheme = (): ColorMode => "light";

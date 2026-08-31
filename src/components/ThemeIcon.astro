@@ -36,6 +36,7 @@
     const newTheme = checkbox.checked ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', newTheme);
     localStorage.setItem('theme', newTheme);
+    document.dispatchEvent(new Event('theme-change'));
   };
   checkbox.addEventListener('change', handleThemeChange);
   if (theme==='light') {
