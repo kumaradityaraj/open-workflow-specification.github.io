@@ -12,7 +12,9 @@ do:
     with:
       document:
         uri: https://fake.com/docs/asyncapi.json
-      operationRef: findPetsByStatus
+      operation: findPetsByStatus
+      channel: /pets
+      subscription: findPetsByStatus
       server: staging
       message:
         payload:

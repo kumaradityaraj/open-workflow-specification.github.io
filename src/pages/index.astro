@@ -5,6 +5,7 @@ import Card from '../components/Card.astro';
 import Section from '../components/Section.astro';
 import { Code } from 'astro:components';
 import { getCollection } from 'astro:content';
+import OWSEditor from "../components/OWSEditor";
 
 const examples = (await getCollection('example')).sort((a,b) => a.data.title.localeCompare(b.data.title));
 ---
@@ -67,21 +68,100 @@ const examples = (await getCollection('example')).sort((a,b) => a.data.title.loc
 
   <!-- Samples -->
   <Section title="User-Friendly DSL: Workflows Made Simple" class="bg-base-200">
-      <div role="tablist" class="tabs tabs-lift tabs-sm overflow-auto">
-        {
-          examples.map((entry, idx) => (
-            <input type="radio" name="code_tabs" role="tab" class="tab h-12" aria-label={entry.data.title} checked={idx===0} />
-            <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
-              <h3 class="text-xl font-bold mb-4">{entry.data.title} Example</h3>
-              <Code themes={{'light': 'github-light', 'dark': 'github-dark'}} lang="yaml" code={entry.body||''} />
+    <div
+      role="tablist"
+      id="example-tabs"
+      class="tabs tabs-lift tabs-sm"
+    >
+      {
+        examples.map((entry, idx) => (
+          <>
+            <input
+              type="radio"
+              name="example_tabs"
+              role="tab"
+              class="tab h-12 whitespace-nowrap"
+              value={entry.id}
+              aria-label={entry.data.title}
+              checked={idx === 0}
+            />
+
+            <div
+              role="tabpanel"
+              class="tab-content bg-base-100 border-base-300 rounded-box p-6 min-h-[600px] max-h-[600px] overflow-auto"
+            >
+              <Code
+                themes={{
+                  light: "github-light",
+                  dark: "github-dark",
+                }}
+                lang="yaml"
+                code={entry.body || ""}
+              />
             </div>
-          ))
-        }
+          </>
+        ))
+      }
+
+      <div
+        class="tabs-line-break"
+        aria-hidden="true"
+      ></div>
+
+      <div class="diagram-slot min-w-0">
+        <OWSEditor
+          client:visible
+          examples={examples.map((entry) => ({
+            id: entry.id,
+            content: entry.body || "",
+          }))}
+        />
       </div>
-      <p class="text-center mt-4">
-        Visit our GitHub repository for <a class="btn btn-accent btn-sm border-accent bg-base-100 text-accent" href={GITHUB_LINK + 'tree/main/examples'} target="_blank" rel="noopener">more examples</a> or complete <a class="btn btn-accent btn-sm border-accent bg-base-100 text-accent" href={GITHUB_LINK + 'tree/main/use-cases'} target="_blank" rel="noopener">use cases</a>.</p>
-      </p>
+    </div>
   </Section>
+
+<!-- Try the package -->
+<Section title="Try it yourself!" isGrid={true}>
+ <Card title="Install from npm" icon="fab fa-npm text-primary text-5xl">
+   <p>
+     Install the Diagram Editor and start building your own workflows.
+   </p>
+   <a
+     class="link link-accent"
+     href="https://www.npmjs.com/package/@openworkflowspec/diagram-editor"
+     target="_blank"
+     rel="noopener"
+   >
+     View on npm
+   </a>
+ </Card>
+ <Card title="Explore the repository" icon="fab fa-github text-primary text-5xl">
+   <p>
+     Visit our GitHub repository for more examples.
+   </p>
+   <a
+     class="link link-accent"
+     href={GITHUB_LINK + "tree/main/examples"}
+     target="_blank"
+     rel="noopener"
+   >
+     More Examples
+   </a>
+ </Card>
+ <Card title="Explore the examples" icon="fa-solid fa-code text-primary text-5xl">
+   <p>
+     Explore examples and complete use cases.
+   </p>
+   <a
+     class="link link-accent"
+     href={GITHUB_LINK + "tree/main/use-cases"}
+     target="_blank"
+     rel="noopener"
+   >
+     Use cases
+   </a>
+ </Card>
+</Section>
 
   <!-- Reach out -->
   <Section title="Reach out to us!" isGrid={true}>
@@ -189,5 +269,31 @@ const examples = (await getCollection('example')).sort((a,b) => a.data.title.loc
 <style>
   .hero-content {
     z-index: 0;
+  }
+  #example-tabs > .tabs-line-break {
+    width: 100%;
+    height: 0;
+    order: 1;
+  }
+
+  #example-tabs > .tab-content {
+    order: 2;
+  }
+
+  #example-tabs > .diagram-slot {
+    display: none;
+  }
+
+  @media (min-width: 1024px) {
+    #example-tabs > .tab-content {
+      width: 50%;
+    }
+    
+    #example-tabs > .diagram-slot {
+      display: block;
+      width: 50%;
+      min-height: 600px;
+      order: 3;
+    }
   }
 </style>

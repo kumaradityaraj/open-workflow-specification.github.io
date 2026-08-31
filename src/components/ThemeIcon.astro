@@ -22,25 +22,13 @@
 </label >
 
 <script is:inline>
-  const theme = (() => {
-    if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
-      return localStorage.getItem('theme') ?? 'light';
-    }
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
-    }
-      return 'light';
-  })();
-  const checkbox = document.getElementById('theme-toggle');
-  const handleThemeChange = () => {
-    const newTheme = checkbox.checked ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-  };
-  checkbox.addEventListener('change', handleThemeChange);
-  if (theme==='light') {
-    checkbox.checked = true;
+  const checkbox = document.getElementById("theme-toggle");
+  if (checkbox instanceof HTMLInputElement) {
+    checkbox.checked = document.documentElement.dataset.theme !== "dark";
   }
-  document.documentElement.setAttribute('data-theme', theme);
-  window.localStorage.setItem('theme', theme);
+</script>
+
+<script>
+  import { initializeThemeToggle } from "../utils/theme";
+  initializeThemeToggle();
 </script>

@@ -12,6 +12,6 @@ do:
         script:
           language: javascript
           arguments:
-            message: ${ .message }
+            - message
           code: >
             console.log(message)

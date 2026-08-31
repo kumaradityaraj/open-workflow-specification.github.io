@@ -2,6 +2,8 @@
 import HtmlHead from "../components/HtmlHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import ThemeScript from "../components/ThemeScript.astro";
+
 
 interface Props {
 	title?: string;
@@ -14,8 +16,9 @@ export interface LayoutProps extends Props {}
 ---
 
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en">
 	<head>
+		<ThemeScript />
 		<HtmlHead {...Astro.props} />
 	</head>
 	<body class="min-h-screen bg-base-100">
